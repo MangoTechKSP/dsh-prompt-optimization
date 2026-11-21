@@ -39,6 +39,18 @@ const DEFAULTS = {
   // Keep that paragraph only when the current route actually has a tool that can
   // do it, so a lean preset never advertises a capability it does not have.
   imageGuidance: 'auto',
+  // How much the agent is expected to decide alone. The prompt carries the
+  // shared rules; this only shifts where the default sits between "work it out"
+  // and "ask first", so a preset can be opinionated without forking the text.
+  autonomy: 'balanced',
+};
+
+/** Per-mode addendum appended after the persona block. */
+const AUTONOMY = {
+  independent:
+    'Decide alone first. Exhaust what is already at hand - read the code, run the command, check the docs, delegate to a subagent - before asking the user anything. Ask only when the answer changes the deliverable, the action cannot be undone, or the choice is theirs for a reason you cannot read (taste, priority, an outside commitment). Do not ask permission for ordinary local work; just say what you are doing.',
+  collaborative:
+    'Check in at the forks. When a task has several reasonable shapes, lay out the options before building. When you hit a blocker, a wrong assumption, or a tradeoff the user owns, stop and ask instead of guessing. A short question costs less than redoing the work, and silence is not consent.',
 };
 
 /** Tools that can commit an image into the conversation. */
@@ -106,7 +118,7 @@ export function apply(ctx, config) {
       // A block carrying our own name means an earlier pass of this same hook
       // (duplicate registration after a live reload) already ran: drop it
       // silently and re-insert, so the prompt never grows a second copy.
-      if (section.name === cfg.sectionName) continue;
+      if (section.name === cfg.sectionName || section.name === `${cfg.sectionName}:autonomy`) continue;
       const keep = !cfg.dropNames.includes(section.name) && !cfg.dropPrefixes.some((prefix) => section.name.startsWith(prefix));
       (keep ? kept : dropped).push(section);
     }
@@ -128,6 +140,12 @@ export function apply(ctx, config) {
     const sections = index >= 0
       ? [...kept.slice(0, index + 1), block, ...kept.slice(index + 1)]
       : [block, ...kept];
+
+    const addendum = AUTONOMY[cfg.autonomy];
+    if (addendum) {
+      const at = sections.indexOf(block);
+      sections.splice(at + 1, 0, { name: `${cfg.sectionName}:autonomy`, text: addendum, interpolate: false });
+    }
 
     return { ...composed, sections };
   }, { prepend: true });

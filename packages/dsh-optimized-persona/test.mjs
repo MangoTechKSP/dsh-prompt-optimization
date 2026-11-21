@@ -90,6 +90,23 @@ const out3 = await customEntry.handler(assembly(), {}, async () => assembly());
 assert.ok(!out3.sections.some((s) => s.name === 'tool:bash'), 'a configured drop prefix is honoured');
 assert.ok(out3.sections.some((s) => s.name === 'plan:policy'), 'everything else is still kept');
 
+// autonomy modes append one addendum and stay idempotent
+const guided = fakeCtx();
+apply(guided.ctx, { autonomy: 'collaborative' });
+const guidedEntry = guided.handlers.find((h) => h.event === 'system-prompt/assemble');
+const guidedAfter = await guidedEntry.handler(assembly(), {}, async () => assembly());
+const guidedBlock = guidedAfter.sections.find((s) => s.name === 'optimized:persona:autonomy');
+assert.ok(guidedBlock, 'collaborative mode adds an autonomy section');
+assert.ok(guidedBlock.text.includes('stop and ask'), 'collaborative text asks instead of guessing');
+const guidedTwice = await guidedEntry.handler(guidedAfter, {}, async () => guidedAfter);
+assert.equal(guidedTwice.sections.filter((s) => s.name === 'optimized:persona:autonomy').length, 1, 'autonomy section is not duplicated');
+
+const auto = fakeCtx();
+apply(auto.ctx, { autonomy: 'independent' });
+const autoEntry = auto.handlers.find((h) => h.event === 'system-prompt/assemble');
+const autoAfter = await autoEntry.handler(assembly(), {}, async () => assembly());
+assert.ok(autoAfter.sections.find((s) => s.name === 'optimized:persona:autonomy')?.text.includes('before asking'), 'independent mode discourages asking');
+
 // image guidance follows the route's tools
 assert.ok(!block.text.includes('Images are evidence'), 'drops image guidance when no image tool is mounted');
 

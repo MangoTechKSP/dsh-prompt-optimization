@@ -5,7 +5,7 @@ Two packages that give [DeepSeek Harness](https://github.com/deepseek-ai) a ters
 | package | what it does |
 | --- | --- |
 | [`dsh-optimized-persona`](packages/dsh-optimized-persona) | Rewrites the assembled system prompt at request time. Keeps tool documentation, the identity line, the model line and plan/team policy; replaces the deployment prose with a working-style prompt. |
-| [`dsh-optimized-preset`](packages/dsh-optimized-preset) | An Agent preset named **Optimized**: the same tool set and plugin rows as the shipped standard preset, plus the persona plugin. Nothing is removed, so it works on any profile. |
+| [`dsh-optimized-preset`](packages/dsh-optimized-preset) | Three Agent presets — **Optimized**, **Optimized · 独立**, **Optimized · 协作** — with the same tool set and plugin rows as the shipped standard preset, plus the persona plugin. Nothing is removed, so they work on any profile. |
 
 The prompt is written for this harness, not copied into it: tool names point at tools that exist here, and six sections cover things a coding-only prompt never needed — instruction precedence, skills and plugins, answer shape, aesthetics, judgment and candor, privacy and personal data, speed, and what to do when a long session stops making progress. See [docs/design.md](docs/design.md) for the section list and the reasoning behind keeping or dropping each one.
 
@@ -16,7 +16,7 @@ Persona plugin, from a packed tarball:
 ```bash
 git clone <this repo> && cd dsh-prompt-optimization
 npm pack ./packages/dsh-optimized-persona
-dsh plugin --profile web add "file:$PWD/dsh-optimized-persona-1.0.0.tgz"
+dsh plugin --profile web add "file:$PWD/dsh-optimized-persona-1.1.0.tgz"
 ```
 
 Preset bundle, from the directory (bundles install as directories, not tarballs):
@@ -31,7 +31,7 @@ Then restart, or let `patchReload: live` pick it up. The preset appears under **
 Verify without starting anything:
 
 ```bash
-dsh --profile web --dump-config | grep -c "id: preset-claude"
+dsh --profile web --dump-config | grep -c "id: optimized"
 ```
 
 ## Configuration
@@ -48,6 +48,9 @@ dsh --profile web --dump-config | grep -c "id: preset-claude"
 | `insertAfter` | `harness:identity`, `deployment:persona-prefix` | Where the persona text is inserted. |
 | `logDropped` | `true` | Log each dropped section name once, which is how a DSH upgrade gets noticed. |
 | `imageGuidance` | `auto` | `auto` keeps the "you may put images into the conversation" paragraph only when the route actually mounts an image tool (`read_image`, `browser_real_screenshot`, `screen_shot`, `univer_screenshot`); `always` / `never` override it. |
+| `autonomy` | `balanced` | `independent` adds "decide alone first, ask only when it changes the deliverable or the action is irreversible"; `collaborative` adds "check in at the forks, offer options before building, stop and ask instead of guessing". `balanced` adds nothing. |
+
+The three presets differ only in this one key: `optimized` uses `balanced`, `optimized-auto` uses `independent`, `optimized-guided` uses `collaborative`. The shared rules — don't reopen a settled decision, flag a real problem once, ask a multiple-choice question when the request is genuinely ambiguous, admit what you don't know — live in the prompt text, so another preset can pick them up with its own `autonomy` setting.
 
 Example profile patch:
 
