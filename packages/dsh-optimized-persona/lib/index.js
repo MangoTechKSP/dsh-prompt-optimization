@@ -15,22 +15,23 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /** Cordis plugin name. */
-export const name = 'claude-code-persona';
+export const name = 'optimized-persona';
 
 /** The prompt registry this row hooks. */
 export const inject = ['systemPrompt'];
 
-const DEFAULT_PROMPT = fileURLToPath(new URL('../prompts/claude-code-persona.md', import.meta.url));
+const DEFAULT_PROMPT = fileURLToPath(new URL('../prompts/optimized-persona.md', import.meta.url));
 
 const DEFAULTS = {
   enabled: true,
   promptFile: '',
-  sectionName: 'claude-code:persona',
-  // Sections whose purpose is to describe *tools*, the *deployment*, or a
-  // *mode policy* survive; everything else is treated as DSH deployment prose
-  // and replaced. `plan:` and `team:` must stay: they carry the plan-mode and
-  // agent-team rules, and dropping them silently disables those modes.
-  keepPrefixes: ['tool:', 'mcp-', 'harness:identity', 'deployment:persona-prefix', 'context:', 'ui:deliverable', 'free-search:', 'plan:', 'team:', 'app:', 'structured:'],
+  sectionName: 'optimized:persona',
+  // Only sections this plugin actually overwrites are dropped; everything else
+  // stays, including whatever other plugins contribute. A keep-list would
+  // silently delete a stranger's section, so the default is a drop-list of one:
+  // the deployment's own persona suffix, which this text replaces. `plan:`,
+  // `team:` and any tool/MCP section must survive untouched.
+  dropPrefixes: ['deployment:persona-suffix'],
   dropNames: [],
   insertAfter: ['harness:identity', 'deployment:persona-prefix'],
   logDropped: true,
@@ -90,7 +91,7 @@ export function apply(ctx, config) {
       const sig = `read:${error.code ?? error.message}`;
       if (!reported.has(sig)) {
         reported.add(sig);
-        console.warn(`[claude-code-persona] cannot read ${file}: ${error.message}`);
+        console.warn(`[optimized-persona] cannot read ${file}: ${error.message}`);
       }
       return composed;
     }
@@ -106,7 +107,7 @@ export function apply(ctx, config) {
       // (duplicate registration after a live reload) already ran: drop it
       // silently and re-insert, so the prompt never grows a second copy.
       if (section.name === cfg.sectionName) continue;
-      const keep = !cfg.dropNames.includes(section.name) && cfg.keepPrefixes.some((prefix) => section.name.startsWith(prefix));
+      const keep = !cfg.dropNames.includes(section.name) && !cfg.dropPrefixes.some((prefix) => section.name.startsWith(prefix));
       (keep ? kept : dropped).push(section);
     }
 
@@ -114,7 +115,7 @@ export function apply(ctx, config) {
       const signature = dropped.map((section) => section.name).sort().join('|');
       if (!reported.has(signature)) {
         reported.add(signature);
-        console.warn(`[claude-code-persona] replaced ${dropped.length} section(s): ${dropped.map((section) => section.name).join(', ')}`);
+        console.warn(`[optimized-persona] replaced ${dropped.length} section(s): ${dropped.map((section) => section.name).join(', ')}`);
       }
     }
 

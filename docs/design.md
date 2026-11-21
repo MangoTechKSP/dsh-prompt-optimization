@@ -35,4 +35,4 @@ Dropping by prefix rather than by exact name is deliberate: a DSH release that r
 
 ## Editing
 
-Edit `packages/dsh-claude-code-persona/prompts/claude-code-persona.md`. `node packages/dsh-claude-code-persona/test.mjs` verifies the rewrite: section survival, insertion point, idempotency across two passes, tool-name mapping, and the `imageGuidance` modes.
+Edit `packages/dsh-optimized-persona/prompts/optimized-persona.md`. `node packages/dsh-optimized-persona/test.mjs` verifies the rewrite: section survival, insertion point, idempotency across two passes, tool-name mapping, and the `imageGuidance` modes.

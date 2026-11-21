@@ -1,4 +1,4 @@
-# dsh-claude-preset
+# dsh-optimized-preset
 
 A DSH Agent preset named **Claude**: the standard tool set minus the Office/Univer tools, paired with the Claude Code style prompt from the sibling package.
 

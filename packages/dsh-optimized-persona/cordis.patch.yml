@@ -3,14 +3,14 @@
 # Every key below is a Config field of lib/index.js (plain object, no
 # Schemastery schema, so unknown keys pass through untouched).
 - insert:
-    - id: claude-code-persona
-      name: dsh-claude-code-persona
+    - id: optimized-persona
+      name: dsh-optimized-persona
       config:
         enabled: true
         # Sections that survive the rewrite, by name prefix. Tool docs, the MCP
         # list, the harness identity line, the model line, file references and
         # the free-search engine list are kept; all other deployment prose is
-        # replaced by prompts/claude-code-persona.md.
+        # replaced by prompts/optimized-persona.md.
         keepPrefixes:
           - 'tool:'
           - 'mcp-'
