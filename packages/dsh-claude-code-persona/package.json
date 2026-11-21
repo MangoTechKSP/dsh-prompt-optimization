@@ -23,7 +23,7 @@
     "system-prompt",
     "claude-code"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
@@ -34,11 +34,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/OWNER/dsh-claude-code.git",
+    "url": "https://github.com/MangoTechKSP/dsh-claude-code.git",
     "directory": "packages/dsh-claude-code-persona"
   },
   "bugs": {
-    "url": "https://github.com/OWNER/dsh-claude-code/issues"
+    "url": "https://github.com/MangoTechKSP/dsh-claude-code/issues"
   },
-  "homepage": "https://github.com/OWNER/dsh-claude-code#readme"
+  "homepage": "https://github.com/MangoTechKSP/dsh-claude-code#readme"
 }

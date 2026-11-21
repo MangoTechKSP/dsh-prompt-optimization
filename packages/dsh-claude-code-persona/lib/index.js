@@ -34,7 +34,27 @@ const DEFAULTS = {
   dropNames: [],
   insertAfter: ['harness:identity', 'deployment:persona-prefix'],
   logDropped: true,
+  // The prompt tells the model it may put images into the conversation itself.
+  // Keep that paragraph only when the current route actually has a tool that can
+  // do it, so a lean preset never advertises a capability it does not have.
+  imageGuidance: 'auto',
 };
+
+/** Tools that can commit an image into the conversation. */
+const IMAGE_TOOLS = ['read_image', 'browser_real_screenshot', 'browser_screenshot', 'screen_shot', 'univer_screenshot'];
+
+/** Does the assembled route expose at least one image-inserting tool? */
+function routeHasImageTool(composed) {
+  const tools = Array.isArray(composed?.tools) ? composed.tools : [];
+  return tools.some((tool) => IMAGE_TOOLS.includes(tool?.name));
+}
+
+/** Remove the "images are evidence" paragraph, leaving the rest of the section. */
+function stripImageParagraph(text) {
+  const paragraphs = text.split('\n\n');
+  const kept = paragraphs.filter((paragraph) => !paragraph.startsWith('Images are evidence, not decoration'));
+  return kept.length === paragraphs.length ? text : kept.join('\n\n');
+}
 
 let cache = { file: '', mtimeMs: 0, text: '' };
 
@@ -75,6 +95,9 @@ export function apply(ctx, config) {
       return composed;
     }
     if (!text) return composed;
+
+    const wantsImages = cfg.imageGuidance === 'always' || (cfg.imageGuidance === 'auto' && routeHasImageTool(composed));
+    if (!wantsImages) text = stripImageParagraph(text);
 
     const kept = [];
     const dropped = [];

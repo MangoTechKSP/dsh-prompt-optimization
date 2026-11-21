@@ -8,7 +8,7 @@
     }
   },
   "description": "Agent preset for DeepSeek Harness: Claude-style prompts with a lean coding tool set",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "keywords": [
     "dsh",
     "dsh-bundle",
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/OWNER/dsh-claude-code.git",
+    "url": "https://github.com/MangoTechKSP/dsh-claude-code.git",
     "directory": "packages/dsh-claude-preset"
   }
 }

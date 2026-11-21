@@ -7,3 +7,6 @@ dump-*.yml
 dump-*.err
 capture-*.jsonl
 extracted/
+
+# local build metadata
+packages/dsh-claude-code-persona/prompts/claude-code.version.json

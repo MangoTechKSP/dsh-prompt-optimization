@@ -1,13 +1,13 @@
 # dsh-claude-code
 
-Two packages that give [DeepSeek Harness](https://github.com/deepseek-ai) a Claude Code style system prompt: short imperative rules, explicit priorities, and answers sized to the question instead of the effort.
+Two packages that give [DeepSeek Harness](https://github.com/deepseek-ai) a terse, imperative working style: short rules, explicit priorities, and answers sized to the question instead of the effort spent on it.
 
 | package | what it does |
 | --- | --- |
-| [`dsh-claude-code-persona`](packages/dsh-claude-code-persona) | Rewrites the assembled system prompt at request time. Keeps tool documentation, the identity line, the model line, plan/team policy; replaces the rest with a working-style prompt. |
+| [`dsh-claude-code-persona`](packages/dsh-claude-code-persona) | Rewrites the assembled system prompt at request time. Keeps tool documentation, the identity line, the model line and plan/team policy; replaces the deployment prose with a working-style prompt. |
 | [`dsh-claude-preset`](packages/dsh-claude-preset) | An Agent preset named **Claude** with a lean coding tool set (Office/Univer tools removed). Works with or without the persona plugin. |
 
-The persona plugin does not copy Claude Code's text verbatim — it carries the *behaviour* of that prompt, re-pointed at tools this harness actually has, plus five sections Claude Code has no equivalent for: instruction precedence, skills and plugins, answer shape, aesthetics, and privacy. See [docs/provenance.md](docs/provenance.md) for exactly what was taken, what was dropped and why.
+The prompt is written for this harness, not copied into it: tool names point at tools that exist here, and six sections cover things a coding-only prompt never needed — instruction precedence, skills and plugins, answer shape, aesthetics, judgment and candor, privacy and personal data, speed, and what to do when a long session stops making progress. See [docs/design.md](docs/design.md) for the section list and the reasoning behind keeping or dropping each one.
 
 ## Install
 
@@ -31,7 +31,7 @@ Then restart, or let `patchReload: live` pick it up. The preset appears under **
 Verify without starting anything:
 
 ```bash
-printf 'plan:policy must survive: '; dsh --profile web --dump-config | grep -c "id: preset-claude"
+dsh --profile web --dump-config | grep -c "id: preset-claude"
 ```
 
 ## Configuration
@@ -47,6 +47,7 @@ printf 'plan:policy must survive: '; dsh --profile web --dump-config | grep -c "
 | `dropNames` | `[]` | Exact section names to drop even if a prefix matches. |
 | `insertAfter` | `harness:identity`, `deployment:persona-prefix` | Where the persona text is inserted. |
 | `logDropped` | `true` | Log each dropped section name once, which is how a DSH upgrade gets noticed. |
+| `imageGuidance` | `auto` | `auto` keeps the "you may put images into the conversation" paragraph only when the route actually mounts an image tool (`read_image`, `browser_real_screenshot`, `screen_shot`, `univer_screenshot`); `always` / `never` override it. |
 
 Example profile patch:
 
@@ -57,16 +58,25 @@ Example profile patch:
     dropNames: ['app:web-surface']
 ```
 
+## Images in the conversation
+
+A model can only put an image into a chat through a tool result or a user attachment — there is no message part it can attach on its own. What makes that usable is `read_image`: it commits a PNG/JPEG/WebP/GIF into the conversation, so the user sees exactly the pixels the model saw, instead of a path or a description.
+
+The plugin does not reimplement that tool. It does the two things it can own:
+
+- the prompt tells the model when a picture beats prose ("images are evidence, not decoration"), and
+- `imageGuidance: auto` deletes that paragraph on routes without an image tool, so a lean preset never advertises a capability it cannot deliver.
+
 ## How it works
 
 DSH assembles the system prompt from named sections and runs a waterfall hook, `system-prompt/assemble`, before sending it. The plugin joins that hook, drops every section whose name is not tool or deployment documentation, and inserts its own text. Because the rule is by name prefix, a DSH release that rewords the built-in sections does not break it — an upgrade that renames one shows up as a line in the log instead of a silent behaviour change.
 
 Nothing here depends on `@deepseek-ai/*` at runtime, so it resolves the same whether the profile links it or copies it in.
 
-## Keeping up with Claude Code
+## Editing the prompt
 
-The persona text is derived from the prompt of the Claude Code CLI release recorded in `prompts/claude-code.version.json`. When Anthropic ships a new release, `tools/` can re-capture the differences locally instead of guessing — see [docs/provenance.md](docs/provenance.md).
+`packages/dsh-claude-code-persona/prompts/claude-code-persona.md` is the whole prompt; edit it and the next request uses it. `node packages/dsh-claude-code-persona/test.mjs` checks the rewrite end to end without booting the harness, and fails if a section disappears, a duplicate appears across two passes, or a Claude-only tool name leaks through.
 
 ## License
 
-MIT for the code. The prompt text is a derivative of Anthropic's Claude Code system prompt — read [NOTICE.md](NOTICE.md) before redistributing.
+Apache-2.0. See [LICENSE](LICENSE).

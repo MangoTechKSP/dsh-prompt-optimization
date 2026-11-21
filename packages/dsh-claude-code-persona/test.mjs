@@ -88,6 +88,34 @@ const customEntry = custom.handlers.find((h) => h.event === 'system-prompt/assem
 const out3 = await customEntry.handler(assembly(), {}, async () => assembly());
 assert.ok(out3.sections.some((s) => s.name === 'plan:policy'), 'config can preserve a section');
 
+// image guidance follows the route's tools
+assert.ok(!block.text.includes('Images are evidence'), 'drops image guidance when no image tool is mounted');
+
+const withImage = assembly();
+withImage.tools = [{ name: 'read_image' }];
+const imageOut = await entry.handler(withImage, {}, async () => withImage);
+const imageBlock = imageOut.sections.find((s) => s.name === 'claude-code:persona');
+assert.ok(imageBlock.text.includes('Images are evidence'), 'keeps image guidance when read_image is mounted');
+assert.ok(imageBlock.text.includes('read_image'), 'names the tool that does it');
+
+const forced = fakeCtx();
+apply(forced.ctx, { imageGuidance: 'always' });
+const forcedEntry = forced.handlers.find((h) => h.event === 'system-prompt/assemble');
+const forcedOut = await forcedEntry.handler(assembly(), {}, async () => assembly());
+assert.ok(
+  forcedOut.sections.find((s) => s.name === 'claude-code:persona').text.includes('Images are evidence'),
+  'imageGuidance: always keeps the paragraph without an image tool',
+);
+
+const off2 = fakeCtx();
+apply(off2.ctx, { imageGuidance: 'never' });
+const offEntry = off2.handlers.find((h) => h.event === 'system-prompt/assemble');
+const offOut = await offEntry.handler(withImage, {}, async () => withImage);
+assert.ok(
+  !offOut.sections.find((s) => s.name === 'claude-code:persona').text.includes('Images are evidence'),
+  'imageGuidance: never drops the paragraph even with an image tool',
+);
+
 // disabled means no hook at all
 const off = fakeCtx();
 apply(off.ctx, { enabled: false });
