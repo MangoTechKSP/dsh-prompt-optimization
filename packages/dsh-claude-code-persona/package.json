@@ -1,0 +1,44 @@
+{
+  "name": "dsh-claude-code-persona",
+  "version": "1.0.0",
+  "description": "DSH plugin that replaces the deployment prose in DeepSeek Harness system prompt with a Claude Code style working prompt, keeping tool docs, identity and model lines",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    }
+  },
+  "files": [
+    "lib",
+    "prompts",
+    "cordis.patch.yml",
+    "test.mjs",
+    "README.md"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "system-prompt",
+    "claude-code"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OWNER/dsh-claude-code.git",
+    "directory": "packages/dsh-claude-code-persona"
+  },
+  "bugs": {
+    "url": "https://github.com/OWNER/dsh-claude-code/issues"
+  },
+  "homepage": "https://github.com/OWNER/dsh-claude-code#readme"
+}

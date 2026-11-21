@@ -1,0 +1,29 @@
+# Bundle patch: mount the Claude Code persona rewrite.
+#
+# Every key below is a Config field of lib/index.js (plain object, no
+# Schemastery schema, so unknown keys pass through untouched).
+- insert:
+    - id: claude-code-persona
+      name: dsh-claude-code-persona
+      config:
+        enabled: true
+        # Sections that survive the rewrite, by name prefix. Tool docs, the MCP
+        # list, the harness identity line, the model line, file references and
+        # the free-search engine list are kept; all other deployment prose is
+        # replaced by prompts/claude-code-persona.md.
+        keepPrefixes:
+          - 'tool:'
+          - 'mcp-'
+          - 'harness:identity'
+          - 'deployment:persona-prefix'
+          - 'context:'
+          - 'ui:deliverable'
+          - 'free-search:'
+        # Set to a section name to force-drop it even if a keep prefix matches.
+        dropNames: []
+        # Where the block lands: after the last anchor present.
+        insertAfter:
+          - 'harness:identity'
+          - 'deployment:persona-prefix'
+        # Log the names of replaced sections once per distinct set.
+        logDropped: true
