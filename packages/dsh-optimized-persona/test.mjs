@@ -49,6 +49,7 @@ assert.deepEqual(
     'harness:identity',
     'deployment:persona-prefix',
     'optimized:persona',
+    'optimized:persona:autonomy',
     'plan:policy',
     'team:policy',
     'app:web-surface',

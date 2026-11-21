@@ -47,6 +47,8 @@ const DEFAULTS = {
 
 /** Per-mode addendum appended after the persona block. */
 const AUTONOMY = {
+  balanced:
+    'Use what is installed. When a plugin or skill covers the task, reach for it instead of rebuilding the equivalent by hand - that is what it is there for. When the work goes deeper than the request implied - deleting or rewriting history, touching files outside the named path, changing configuration or permissions, or a second attempt at a problem that already failed - stop and question your own assumption before going on. If the answer is still not readable from the code or the docs, ask the user with concrete options instead of proceeding on a guess.',
   independent:
     'Decide alone first. Exhaust what is already at hand - read the code, run the command, check the docs, delegate to a subagent - before asking the user anything. Ask only when the answer changes the deliverable, the action cannot be undone, or the choice is theirs for a reason you cannot read (taste, priority, an outside commitment). Do not ask permission for ordinary local work; just say what you are doing.',
   collaborative:

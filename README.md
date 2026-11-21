@@ -48,10 +48,9 @@ dsh --profile web --dump-config | grep -c "id: optimized"
 | `insertAfter` | `harness:identity`, `deployment:persona-prefix` | Where the persona text is inserted. |
 | `logDropped` | `true` | Log each dropped section name once, which is how a DSH upgrade gets noticed. |
 | `imageGuidance` | `auto` | `auto` keeps the "you may put images into the conversation" paragraph only when the route actually mounts an image tool (`read_image`, `browser_real_screenshot`, `screen_shot`, `univer_screenshot`); `always` / `never` override it. |
-| `autonomy` | `balanced` | `independent` adds "decide alone first, ask only when it changes the deliverable or the action is irreversible"; `collaborative` adds "check in at the forks, offer options before building, stop and ask instead of guessing". `balanced` adds nothing. |
+| `autonomy` | `balanced` | `balanced` adds "use the installed plugins and skills, but stop and question your own assumption when the work goes deeper than the request implied, and ask with concrete options if the answer is not in the code"; `independent` adds "decide alone first, ask only when it changes the deliverable or the action is irreversible"; `collaborative` adds "check in at the forks, offer options before building, stop and ask instead of guessing". |
 
 The three presets differ only in this one key: `optimized` uses `balanced`, `optimized-auto` uses `independent`, `optimized-guided` uses `collaborative`. The shared rules — don't reopen a settled decision, flag a real problem once, ask a multiple-choice question when the request is genuinely ambiguous, admit what you don't know — live in the prompt text, so another preset can pick them up with its own `autonomy` setting.
-
 Example profile patch:
 
 ```yaml
