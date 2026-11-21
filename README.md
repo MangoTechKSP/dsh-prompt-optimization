@@ -1,4 +1,4 @@
-# dsh-claude-code
+# dsh-prompt-optimization
 
 Two packages that give [DeepSeek Harness](https://github.com/deepseek-ai) a terse, imperative working style: short rules, explicit priorities, and answers sized to the question instead of the effort spent on it.
 
@@ -14,7 +14,7 @@ The prompt is written for this harness, not copied into it: tool names point at 
 Persona plugin, from a packed tarball:
 
 ```bash
-git clone <this repo> && cd dsh-claude-code
+git clone <this repo> && cd dsh-prompt-optimization
 npm pack ./packages/dsh-claude-code-persona
 dsh plugin --profile web add "file:$PWD/dsh-claude-code-persona-1.0.0.tgz"
 ```

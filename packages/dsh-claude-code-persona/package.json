@@ -34,11 +34,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MangoTechKSP/dsh-claude-code.git",
+    "url": "https://github.com/MangoTechKSP/dsh-prompt-optimization.git",
     "directory": "packages/dsh-claude-code-persona"
   },
   "bugs": {
-    "url": "https://github.com/MangoTechKSP/dsh-claude-code/issues"
+    "url": "https://github.com/MangoTechKSP/dsh-prompt-optimization/issues"
   },
-  "homepage": "https://github.com/MangoTechKSP/dsh-claude-code#readme"
+  "homepage": "https://github.com/MangoTechKSP/dsh-prompt-optimization#readme"
 }
