@@ -60,12 +60,9 @@ Example profile patch:
 
 ## Images in the conversation
 
-A model can only put an image into a chat through a tool result or a user attachment — there is no message part it can attach on its own. What makes that usable is `read_image`: it commits a PNG/JPEG/WebP/GIF into the conversation, so the user sees exactly the pixels the model saw, instead of a path or a description.
+A model has no message part to attach an image to, so the picture goes where the text goes: the prompt tells the model to produce an image with `read_image` (PNG/JPEG/WebP/GIF, committed through the attachment store, so it sees exactly the pixels the user will see), `browser_real_screenshot`, `screen_shot` or `univer_screenshot`, and then embed it in the reply itself as a markdown image pointing at the file. The reader sees it inline, without opening anything; `present()` is only for deliverables the user should keep.
 
-The plugin does not reimplement that tool. It does the two things it can own:
-
-- the prompt tells the model when a picture beats prose ("images are evidence, not decoration"), and
-- `imageGuidance: auto` deletes that paragraph on routes without an image tool, so a lean preset never advertises a capability it cannot deliver.
+The plugin does not reimplement `read_image`; it owns the two ends it can affect — the instruction that says when a picture beats prose, and `imageGuidance: auto`, which drops that instruction on routes that do not mount an image tool.
 
 ## How it works
 
