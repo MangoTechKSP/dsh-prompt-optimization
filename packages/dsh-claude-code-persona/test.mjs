@@ -45,8 +45,17 @@ const names = out.sections.map((s) => s.name);
 
 assert.deepEqual(
   names,
-  ['harness:identity', 'deployment:persona-prefix', 'claude-code:persona', 'tool:bash', 'mcp-resource-servers'],
-  'keeps identity/model/tool sections, drops deployment prose, inserts the block after the model line',
+  [
+    'harness:identity',
+    'deployment:persona-prefix',
+    'claude-code:persona',
+    'plan:policy',
+    'team:policy',
+    'app:web-surface',
+    'tool:bash',
+    'mcp-resource-servers',
+  ],
+  'keeps identity/model/plan/team/tool sections, drops deployment prose, inserts the block after the model line',
 );
 
 const block = out.sections.find((s) => s.name === 'claude-code:persona');
