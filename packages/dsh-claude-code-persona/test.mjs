@@ -62,7 +62,11 @@ const block = out.sections.find((s) => s.name === 'claude-code:persona');
 assert.ok(block.text.length > 10000, 'persona text loaded from prompts/');
 assert.equal(block.interpolate, false, 'persona text is never template-interpolated');
 assert.ok(block.text.includes('# Executing actions with care'), 'carries the Claude Code sections');
-assert.ok(block.text.includes('ops_bash'), 'tool names are mapped to this harness');
+assert.ok(block.text.includes('the skill tool'), 'keeps the skill guidance');
+assert.ok(
+  !/\b(TaskCreate|TodoWrite|WebFetch|WebSearch|MultiEdit)\b/.test(block.text),
+  'no Claude-only tool names survive mapping',
+);
 assert.ok(!block.text.includes('Read('), 'no unmapped Claude tool names');
 
 // unknown sections from plugins installed later are dropped by default
