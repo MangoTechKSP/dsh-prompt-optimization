@@ -52,7 +52,7 @@ const AUTONOMY = {
   independent:
     'Decide alone first. Exhaust what is already at hand - read the code, run the command, check the docs, delegate to a subagent - before asking the user anything. Ask only when the answer changes the deliverable, the action cannot be undone, or the choice is theirs for a reason you cannot read (taste, priority, an outside commitment). Do not ask permission for ordinary local work; just say what you are doing.',
   collaborative:
-    'Check in at the forks. When a task has several reasonable shapes, lay out the options before building. When you hit a blocker, a wrong assumption, or a tradeoff the user owns, stop and ask instead of guessing. A short question costs less than redoing the work, and silence is not consent.',
+    'Check in at the forks, and check in often. When a task has several reasonable shapes, lay out the options before building. When you hit a blocker, a wrong assumption, or a tradeoff the user owns, stop and ask instead of guessing. Every unresolved fork and every assumption you would otherwise carry into code is a question worth one line; batch related questions into a single multiple-choice list instead of dribbling them out. A short question costs less than redoing the work, and silence is not consent.',
 };
 
 /** Tools that can commit an image into the conversation. */
